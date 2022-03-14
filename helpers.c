@@ -62,3 +62,60 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
     }
     return;
 }
+bool valid_pixal(int k,int l,int height,int width)
+{
+    return k>=0 && k<height && l>=0 && l<width;
+
+}
+
+RGBTRIPLE get_blurred(int i,int j,int height, int width,RGBTRIPLE image[height][width])
+{
+    int count=0;
+    int r,b,g; r=b=g=0;
+    for(int k=i-1;k<=i+1;k++)
+    {
+        for(int l=j-1;l<=j+1;l++)
+        {
+            if(valid_pixal(k,l,height,width))
+            {
+                count++;
+                r+=image[k][l].rgbtRed;
+                b+=image[k][l].rgbtBlue;
+                g+=image[k][l].rgbtGreen;
+            }
+
+        }
+    }
+    RGBTRIPLE pixal;
+    pixal.rgbtRed=round( (float)r/count);
+    pixal.rgbtBlue=round( ( float)b/count);
+    pixal.rgbtGreen=round( (float)g/count);
+    return pixal;
+}
+
+// Blur image
+void blur(int height, int width, RGBTRIPLE image[height][width])
+{
+    //copy variable for storing pixals
+    RGBTRIPLE copy[height][width];
+    // two loops for picking a pixal
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+          copy[i][j]=get_blurred(i,j,height,width,image);
+
+        }
+
+    }
+    for(int i=0;i<height;i++)
+    {
+        for(int j=0;j<width;j++)
+        {
+            image[i][j]=copy[i][j];
+        }
+    }
+
+    return;
+}
+
